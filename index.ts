@@ -33,6 +33,13 @@ async function getCurrentUser(token: string) {
   return user;
 }
 
+app.get("/posts", async (req, res) => {
+    const posts = await prisma.post.findMany({
+        include: {user: true, comments: true, _count: {select: {upvotes: true}}}
+    })
+    res.send(posts)
+})
+
 app.post("/register", async (req, res) => {
   try {
     const users = await prisma.user.findMany({
@@ -48,7 +55,7 @@ app.post("/register", async (req, res) => {
       },
     });
     if (users.length > 0) {
-      res.status(400).json({ message: "User already exists" });
+      res.status(400).send({ message: "User already exists" });
     } else {
       const user = await prisma.user.create({
         data: {
@@ -68,7 +75,7 @@ app.post("/register", async (req, res) => {
     }
   } catch (error) {
     // @ts-ignore
-    res.status(451).json({ error: error.message });
+    res.status(451).send({ error: error.message });
   }
 });
 
@@ -95,6 +102,26 @@ app.post("/login", async (req, res) => {
       const token = getToken(user.id);
       res.send({ user, token });
     } else {
-        res.status(400).json({ message: "Invalid credentials" });
+        res.status(400).send({ message: "Invalid credentials. Email or password is incorrect!" });
     }
 });
+
+app.get("/validate", async (req, res) => {
+    try {
+        if(req.headers.authorization){
+            const user = await getCurrentUser(req.headers.authorization);
+            // @ts-ignore
+            const token = getToken(user.id);
+            res.send({ user, token });
+        } else {
+            res.status(401).send({ message: "Unauthorized" });
+        }
+    } catch (error) {
+        // @ts-ignore
+        res.status(401).send({ error: error.message });
+    }
+})
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+})
