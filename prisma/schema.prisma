@@ -9,3 +9,41 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique
+  name     String?
+  posts    Post[]
+  upvotes  Upvote[]
+  comments Comment[]
+}
+
+model Post {
+  id      Int       @id @default(autoincrement())
+  title   String
+  content String?
+  image   String?
+  saved   Boolean   @default(false)
+  user    User      @relation(fields: [userId], references: [id])
+  userId  Int
+  upvotes Upvote[]
+  comment Comment[]
+}
+
+model Upvote {
+  id     Int  @id @default(autoincrement())
+  post   Post @relation(fields: [postId], references: [id])
+  postId Int
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+}
+
+model Comment {
+  id     Int    @id @default(autoincrement())
+  text   String
+  post   Post   @relation(fields: [postId], references: [id])
+  postId Int
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int
+}
