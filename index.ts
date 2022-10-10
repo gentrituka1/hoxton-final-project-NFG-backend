@@ -5,6 +5,8 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
+const HLTV = require("hltv-api").default;
+
 dotenv.config();
 
 const prisma = new PrismaClient();
@@ -32,6 +34,21 @@ async function getCurrentUser(token: string) {
   });
   return user;
 }
+
+app.get("/news", async (req, res) => {
+  const news = await HLTV.getNews();
+  res.send(news)
+})
+
+app.get("/matches", async (req, res) => {
+  const matches = await HLTV.getMatches();
+  res.send(matches)
+})
+
+app.get("/matches/:id", async (req, res) => {
+  const match = await HLTV.getMatch({ id: req.params.id });
+  res.send(match)
+})
 
 app.post("/register", async (req, res) => {
   try {
