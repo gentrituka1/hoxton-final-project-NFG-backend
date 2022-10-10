@@ -33,13 +33,6 @@ async function getCurrentUser(token: string) {
   return user;
 }
 
-app.get("/posts", async (req, res) => {
-    const posts = await prisma.post.findMany({
-        include: {user: true, comments: true, _count: {select: {upvotes: true}}}
-    })
-    res.send(posts)
-})
-
 app.post("/register", async (req, res) => {
   try {
     const users = await prisma.user.findMany({
