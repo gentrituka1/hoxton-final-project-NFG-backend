@@ -36,13 +36,18 @@ async function getCurrentUser(token: string) {
 }
 
 app.get("/news", async (req, res) => {
+  try{
   const news = await HLTV.getNews();
-  res.send(news)
+  res.json(news)
+  } catch(error){
+    //@ts-ignore
+    alert({error: error.message})
+  }
 })
 
 app.get("/matches", async (req, res) => {
   const matches = await HLTV.getMatches();
-  res.send(matches)
+  res.json(matches)
 })
 
 app.get("/matches/:id", async (req, res) => {
