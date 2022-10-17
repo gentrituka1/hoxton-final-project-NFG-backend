@@ -36,23 +36,43 @@ async function getCurrentUser(token: string) {
 }
 
 app.get("/news", async (req, res) => {
-  try{
   const news = await HLTV.getNews();
-  res.json(news)
-  } catch(error){
-    //@ts-ignore
-    alert({error: error.message})
-  }
+  res.send(news)
 })
 
 app.get("/matches", async (req, res) => {
   const matches = await HLTV.getMatches();
-  res.json(matches)
+  res.send(matches)
 })
 
 app.get("/matches/:id", async (req, res) => {
-  const match = await HLTV.getMatch({ id: req.params.id });
+  const match = await HLTV.getMatchById({ id: req.params.id });
   res.send(match)
+})
+
+app.get("/results", async (req, res) => {
+  const results = await HLTV.getResults();
+  res.send(results)
+})
+
+app.get("/players", async (req, res) => {
+  const players = await HLTV.getTopPlayers();
+  res.send(players)
+})
+
+app.get("/players/:id", async (req, res) => {
+  const player = await HLTV.getPlayerbyId({ id: req.params.id });
+  res.send(player)
+})
+
+app.get("/teams", async (req, res) => {
+  const teams = await HLTV.getTopTeams();
+  res.send(teams)
+})
+
+app.get("/teams/:id", async (req, res) => {
+  const team = await HLTV.getTeamById({ id: req.params.id });
+  res.send(team)
 })
 
 app.post("/register", async (req, res) => {
