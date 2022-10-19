@@ -4,8 +4,9 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import HLTV from "hltv-api"
 
-const HLTV = require("hltv-api").default;
+
 
 dotenv.config();
 
@@ -46,7 +47,7 @@ app.get("/matches", async (req, res) => {
 })
 
 app.get("/matches/:id", async (req, res) => {
-  const match = await HLTV.getMatchById({ id: req.params.id });
+  const match = await HLTV.getMatchById(Number(req.params.id));
   res.send(match)
 })
 
@@ -57,11 +58,12 @@ app.get("/results", async (req, res) => {
 
 app.get("/players", async (req, res) => {
   const players = await HLTV.getTopPlayers();
-  res.send(players)
+  const slicedPlayers = players.slice(0, 30);
+  res.send(slicedPlayers)
 })
 
 app.get("/players/:id", async (req, res) => {
-  const player = await HLTV.getPlayerbyId({ id: req.params.id });
+  const player = await HLTV.getPlayerById(Number(req.params.id));
   res.send(player)
 })
 
@@ -71,7 +73,7 @@ app.get("/teams", async (req, res) => {
 })
 
 app.get("/teams/:id", async (req, res) => {
-  const team = await HLTV.getTeamById({ id: req.params.id });
+  const team = await HLTV.getTeamById(Number(req.params.id));
   res.send(team)
 })
 
