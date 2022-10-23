@@ -28,10 +28,7 @@ async function getCurrentUser(token: string) {
     where: {
       // @ts-ignore
       id: Number(decodedData.id),
-    },
-    include: {
-      posts: true,
-    },
+    }
   });
   return user;
 }
@@ -101,11 +98,6 @@ app.post("/register", async (req, res) => {
           nickname: req.body.nickname,
           password: bcrypt.hashSync(req.body.password, 10),
         },
-        include: {
-          posts: true,
-          comments: true,
-          _count: { select: { upvotes: true } },
-        },
       });
       const token = getToken(user.id);
       res.send({ user, token });
@@ -127,12 +119,7 @@ app.post("/login", async (req, res) => {
           nickname: req.body.login,
         },
       ],
-    },
-    include: {
-      posts: true,
-      comments: true,
-      _count: { select: { upvotes: true } },
-    },
+    }
   });
     const user = users[0];
     if (user && bcrypt.compareSync(req.body.password, user.password)) {
